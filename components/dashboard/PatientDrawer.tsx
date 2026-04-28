@@ -1,4 +1,5 @@
-import React from 'react'
+'use client'
+import React, { useEffect, useState } from 'react'
 import { PatientWithLatestAssessment, PatientAssessment, FamilyMember } from '../../lib/types'
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine, AreaChart, Area } from 'recharts'
 import { X, Cigarette, Dna, Scale, Activity, Droplet, AlertCircle, User, CheckCircle, AlertTriangle, Phone, Users, ShieldCheck, HeartPulse } from 'lucide-react'
@@ -178,29 +179,31 @@ export default function PatientDrawer({
           <div className="mb-10">
             <h3 className="text-sm font-black text-slate-400 uppercase tracking-[0.15em] mb-6">Risk Trend</h3>
             <div className="h-[200px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#0EA5E9" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="#0EA5E9" stopOpacity={0}/>
-                    </linearGradient>
-                  </defs>
-                  <XAxis dataKey="date" hide />
-                  <YAxis domain={[0, 1]} hide />
-                  <Tooltip 
-                    contentStyle={{ borderRadius: '24px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)' }}
-                  />
-                  <Area 
-                    type="monotone" 
-                    dataKey="score" 
-                    stroke="#0EA5E9" 
-                    strokeWidth={4}
-                    fillOpacity={1} 
-                    fill="url(#colorScore)" 
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
+              {typeof window !== 'undefined' && (
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#0EA5E9" stopOpacity={0.3}/>
+                        <stop offset="95%" stopColor="#0EA5E9" stopOpacity={0}/>
+                      </linearGradient>
+                    </defs>
+                    <XAxis dataKey="date" hide />
+                    <YAxis domain={[0, 1]} hide />
+                    <Tooltip 
+                      contentStyle={{ borderRadius: '24px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)' }}
+                    />
+                    <Area 
+                      type="monotone" 
+                      dataKey="score" 
+                      stroke="#0EA5E9" 
+                      strokeWidth={4}
+                      fillOpacity={1} 
+                      fill="url(#colorScore)" 
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              )}
             </div>
           </div>
         </div>
