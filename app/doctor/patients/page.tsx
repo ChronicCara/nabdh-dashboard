@@ -1,4 +1,6 @@
 'use client'
+export const dynamic = 'force-dynamic'
+
 
 import React, { useState, useEffect, useMemo } from 'react'
 import { PatientWithLatestAssessment, PatientAssessment } from '../../../lib/types'
