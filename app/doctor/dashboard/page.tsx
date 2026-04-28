@@ -27,7 +27,7 @@ const RiskChart = dynamic(() => import('../../../components/dashboard/RiskChart'
 const PatientDrawer = dynamic(() => import('../../../components/dashboard/PatientDrawer'), { ssr: false })
 import { Plus, X, Search, Bell, Calendar, User, LayoutDashboard, Sparkles, Users as UsersIcon } from 'lucide-react'
 
-const DOCTOR_ID = "DOCTOR_ID_PLACEHOLDER"
+const DOCTOR_ID = "00000000-0000-0000-0000-000000000000" // Valid UUID format
 const DOCTOR_NAME = "Dr. Benali"
 
 function ErrorBanner({ message, onDismiss }: { message: string, onDismiss: () => void }) {

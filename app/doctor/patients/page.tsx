@@ -39,7 +39,7 @@ export default function PatientsDirectoryPage() {
   const [drawerLoading, setDrawerLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const DOCTOR_ID = "DOCTOR_ID_PLACEHOLDER"
+  const DOCTOR_ID = "00000000-0000-0000-0000-000000000000"
 
   useEffect(() => {
     let isMounted = true
