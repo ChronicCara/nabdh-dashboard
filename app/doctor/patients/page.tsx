@@ -4,9 +4,14 @@ import React, { useState, useEffect, useMemo } from 'react'
 import { PatientWithLatestAssessment, PatientAssessment } from '../../../lib/types'
 import { getAllPatientsWithLatestAssessment, getPatientAssessmentHistory } from '../../../lib/queries'
 
+import dynamic from 'next/dynamic'
 import FilterBar from '../../../components/dashboard/FilterBar'
 import PatientTable from '../../../components/dashboard/PatientTable'
-import PatientDrawer from '../../../components/dashboard/PatientDrawer'
+
+const PatientDrawer = dynamic(() => import('../../../components/dashboard/PatientDrawer'), { 
+  ssr: false,
+  loading: () => <div className="fixed right-0 top-0 h-full w-[520px] bg-white shadow-2xl z-50 animate-pulse" />
+})
 
 // Quick inline error banner
 function ErrorBanner({ message, onDismiss }: { message: string, onDismiss: () => void }) {

@@ -17,12 +17,14 @@ import {
   getNewPatientsSince
 } from '../../../lib/queries'
 
+import dynamic from 'next/dynamic'
 import StatsBar from '../../../components/dashboard/StatsBar'
-import RiskChart from '../../../components/dashboard/RiskChart'
 import FilterBar from '../../../components/dashboard/FilterBar'
 import PatientTable from '../../../components/dashboard/PatientTable'
-import PatientDrawer from '../../../components/dashboard/PatientDrawer'
 import InviteCodeModal from '../../../components/dashboard/InviteCodeModal'
+
+const RiskChart = dynamic(() => import('../../../components/dashboard/RiskChart'), { ssr: false })
+const PatientDrawer = dynamic(() => import('../../../components/dashboard/PatientDrawer'), { ssr: false })
 import { Plus, X, Search, Bell, Calendar, User, LayoutDashboard, Sparkles, Users as UsersIcon } from 'lucide-react'
 
 const DOCTOR_ID = "DOCTOR_ID_PLACEHOLDER"
