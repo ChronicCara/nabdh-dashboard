@@ -136,7 +136,8 @@ export async function checkHealth(): Promise<boolean> {
     }
 
     const data = await response.json()
-    return data?.status === "ok"
+    // The Hela backend returns {"status":"healthy"}
+    return data?.status === "healthy" || data?.status === "ok"
   } catch (error) {
     return false
   }
