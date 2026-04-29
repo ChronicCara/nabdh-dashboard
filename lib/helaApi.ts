@@ -88,9 +88,8 @@ export async function checkHealth(): Promise<boolean> {
 
 export async function onboardPatient(
   payload: HelaOnboardRequest
-): Promise<HelaOnboardResponse | null> {
-  const result = await HelaApiService.onboardPatient(payload)
-  return result.ok ? result.val : null
+) {
+  return await HelaApiService.onboardPatient(payload)
 }
 
 export async function getPatientProfile(

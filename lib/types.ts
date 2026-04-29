@@ -127,29 +127,36 @@ export interface HelaDocterChatResponse {
 
 export interface HelaOnboardRequest {
   profile: {
-    name: string
-    age: number
-    gender: string
-    phone: string
-    address: string
-    family_contact_name: string
-    family_access_granted: boolean
+    id?: string // for import path
+    name?: string
+    age?: number
+    gender?: string
+    phone?: string
+    address?: string
+    family_contact_name?: string
+    family_contact_phone?: string
+    medical_history_summary?: string
+    family_access_granted?: boolean
   }
-  initial_vitals: {
+  initial_vitals?: {
     systolic_bp: number
+    diastolic_bp: number
     fasting_glucose: number
     bmi: number
   }
   is_import: boolean
+  verification_otp?: string
 }
 
 export interface HelaOnboardResponse {
   patient_id: string
-  initial_risk: "LOW" | "MODERATE" | "HIGH"
+  otp?: string
   ai_analysis: {
-    summary: string
-    suggested_focus: string
+    clinical_summary: string
+    welcome_message_darija: string
+    suggested_focus?: string
   }
+  initial_risk?: "LOW" | "MODERATE" | "HIGH"
 }
 
 export interface HelaChatResponse {

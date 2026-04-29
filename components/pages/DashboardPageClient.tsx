@@ -30,7 +30,7 @@ import {
 
 import StatsBar from '../dashboard/StatsBar'
 import FilterBar from '../dashboard/FilterBar'
-import InviteCodeModal from '../dashboard/InviteCodeModal'
+import OnboardingModal from '../dashboard/OnboardingModal'
 import RiskQueue from '../dashboard/RiskQueue'
 import { Plus, X, Bell, Calendar, Sparkles, Users as UsersIcon, BookOpen, AlertCircle, Loader2 } from 'lucide-react'
 
@@ -364,11 +364,12 @@ export default function DashboardPageClient() {
         riskAssessment={riskAssessment}
       />
 
-      <InviteCodeModal
+      <OnboardingModal
         isOpen={showInviteModal}
-        doctorId={DOCTOR_ID}
-        doctorName={DOCTOR_NAME}
         onClose={() => setShowInviteModal(false)}
+        onSuccess={() => {
+          // Optionally refresh data
+        }}
       />
 
       {/* Glossary Slide-over */}

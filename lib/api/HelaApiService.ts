@@ -22,25 +22,25 @@ export interface HealthResponse {
 }
 
 export class HelaApiService {
-  /** POST /chat */
+  /** POST /ai/chat */
   static async chat(
     payload: HelaChatRequest
   ): Promise<Result<HelaChatResponse, ApiError>> {
     try {
-      const { data } = await api.post<HelaChatResponse>('/chat', payload);
+      const { data } = await api.post<HelaChatResponse>('/ai/chat', payload);
       return Ok(data);
     } catch (e) {
       return Err(e as ApiError);
     }
   }
 
-  /** GET /patient/{id}/check-drift */
+  /** GET /patients/{id}/check-drift */
   static async checkDrift(
     patientId: string
   ): Promise<Result<HelaDriftResult, ApiError>> {
     try {
       const { data } = await api.get<HelaDriftResult>(
-        `/patient/${patientId}/check-drift`
+        `/patients/${patientId}/check-drift`
       );
       return Ok(data);
     } catch (e) {
@@ -48,26 +48,26 @@ export class HelaApiService {
     }
   }
 
-  /** GET /patient/{id}/profile */
+  /** GET /patients/{id}/profile */
   static async getPatientProfile(
     patientId: string
   ): Promise<Result<Patient, ApiError>> {
     try {
-      const { data } = await api.get<Patient>(`/patient/${patientId}/profile`);
+      const { data } = await api.get<Patient>(`/patients/${patientId}/profile`);
       return Ok(data);
     } catch (e) {
       return Err(e as ApiError);
     }
   }
 
-  /** GET /patient/{id}/history */
+  /** GET /patients/{id}/history */
   static async getPatientHistory(
     patientId: string,
     days: number = 30
   ): Promise<Result<HelaHistoryPoint[], ApiError>> {
     try {
       const { data } = await api.get<HelaHistoryPoint[]>(
-        `/patient/${patientId}/history?days=${days}`
+        `/patients/${patientId}/history?days=${days}`
       );
       return Ok(data);
     } catch (e) {
@@ -75,10 +75,10 @@ export class HelaApiService {
     }
   }
 
-  /** GET /patients/risk-queue */
+  /** GET /doctor/risk-queue */
   static async getRiskQueue(): Promise<Result<HelaRiskQueueItem[], ApiError>> {
     try {
-      const { data } = await api.get<HelaRiskQueueItem[]>('/patients/risk-queue');
+      const { data } = await api.get<HelaRiskQueueItem[]>('/doctor/risk-queue');
       return Ok(data);
     } catch (e) {
       return Err(e as ApiError);
@@ -103,17 +103,15 @@ export class HelaApiService {
     }
   }
 
-  /** POST /glossary/search */
+  /** GET /system/glossary */
   static async glossarySearch(
     query: string,
     language: string = "darija",
     limit: number = 10
   ): Promise<Result<GlossaryResult[], ApiError>> {
     try {
-      const { data } = await api.post<GlossaryResult[]>('/glossary/search', {
-        query,
-        language,
-        limit
+      const { data } = await api.get<GlossaryResult[]>('/system/glossary', {
+        params: { query, language, limit }
       });
       return Ok(data);
     } catch (e) {
@@ -121,23 +119,24 @@ export class HelaApiService {
     }
   }
 
-  /** GET /health */
+  /** GET /system/health */
   static async healthCheck(): Promise<Result<HealthResponse, ApiError>> {
     try {
-      const { data } = await api.get<HealthResponse>('/health');
+      const { data } = await api.get<HealthResponse>('/system/health');
       return Ok(data);
     } catch (e) {
       return Err(e as ApiError);
     }
   }
 
-  /** POST /patients/onboard */
+  /** POST /doctor/onboard */
   static async onboardPatient(
     payload: HelaOnboardRequest
   ): Promise<Result<HelaOnboardResponse, ApiError>> {
     try {
+      console.log("HEALA: Onboarding patient at /doctor/onboard", payload);
       const { data } = await api.post<HelaOnboardResponse>(
-        '/patients/onboard',
+        '/doctor/onboard',
         payload
       );
       return Ok(data);
