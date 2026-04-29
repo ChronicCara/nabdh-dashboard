@@ -6,7 +6,9 @@ import {
   GlossaryResult 
 } from './types'
 
-const BASE_URL = "https://web-production-fadce.up.railway.app/api/v1"
+const BASE_URL = process.env.NEXT_PUBLIC_HELA_API_URL || 
+                 process.env.HELA_API_URL || 
+                 "https://web-production-fadce.up.railway.app/api/v1"
 
 const getHeaders = () => {
   const key = process.env.HELA_API_KEY ?? 
@@ -136,7 +138,7 @@ export async function checkHealth(): Promise<boolean> {
     }
 
     const data = await response.json()
-    // The Hela backend returns {"status":"healthy"}
+    // Hela backend returns {"status":"healthy"}
     return data?.status === "healthy" || data?.status === "ok"
   } catch (error) {
     return false
