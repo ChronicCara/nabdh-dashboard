@@ -4,7 +4,7 @@ import TopNav from '../../components/layout/TopNav'
 
 export default function DoctorLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex h-screen bg-background overflow-hidden">
+    <div className="flex h-screen overflow-hidden" style={{ backgroundColor: 'hsl(210 40% 98%)' }}>
       {/* Subtle sky aurora to anchor the glassmorphism aesthetic */}
       <div
         aria-hidden

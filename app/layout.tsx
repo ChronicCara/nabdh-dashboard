@@ -36,7 +36,8 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${urbanist.variable} ${jetbrainsMono.variable} bg-background`}
+      className={`${urbanist.variable} ${jetbrainsMono.variable}`}
+      style={{ backgroundColor: 'hsl(210 40% 98%)' }}
     >
       <body className="font-sans antialiased">{children}</body>
     </html>
