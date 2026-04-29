@@ -9,7 +9,7 @@ import {
   HelaDocterChatResponse
 } from '../types';
 import { ApiError } from './types';
-import { Result } from 'ts-results';
+import { Result, Ok, Err } from 'ts-results';
 
 export interface HealthResponse {
   status: string;
@@ -25,9 +25,9 @@ export class HelaApiService {
   ): Promise<Result<HelaChatResponse, ApiError>> {
     try {
       const { data } = await api.post<HelaChatResponse>('/chat', payload);
-      return Result.ok(data);
+      return Ok(data);
     } catch (e) {
-      return Result.err(e as ApiError);
+      return Err(e as ApiError);
     }
   }
 
@@ -39,9 +39,9 @@ export class HelaApiService {
       const { data } = await api.get<HelaDriftResult>(
         `/patient/${patientId}/check-drift`
       );
-      return Result.ok(data);
+      return Ok(data);
     } catch (e) {
-      return Result.err(e as ApiError);
+      return Err(e as ApiError);
     }
   }
 
@@ -54,9 +54,9 @@ export class HelaApiService {
       const { data } = await api.get<HelaHistoryPoint[]>(
         `/patient/${patientId}/history?days=${days}`
       );
-      return Result.ok(data);
+      return Ok(data);
     } catch (e) {
-      return Result.err(e as ApiError);
+      return Err(e as ApiError);
     }
   }
 
@@ -64,9 +64,9 @@ export class HelaApiService {
   static async getRiskQueue(): Promise<Result<HelaRiskQueueItem[], ApiError>> {
     try {
       const { data } = await api.get<HelaRiskQueueItem[]>('/patients/risk-queue');
-      return Result.ok(data);
+      return Ok(data);
     } catch (e) {
-      return Result.err(e as ApiError);
+      return Err(e as ApiError);
     }
   }
 
@@ -82,9 +82,9 @@ export class HelaApiService {
         question: question,
         include_raw_history: includeRawHistory
       });
-      return Result.ok(data);
+      return Ok(data);
     } catch (e) {
-      return Result.err(e as ApiError);
+      return Err(e as ApiError);
     }
   }
 
@@ -100,9 +100,9 @@ export class HelaApiService {
         language,
         limit
       });
-      return Result.ok(data);
+      return Ok(data);
     } catch (e) {
-      return Result.err(e as ApiError);
+      return Err(e as ApiError);
     }
   }
 
@@ -110,9 +110,9 @@ export class HelaApiService {
   static async healthCheck(): Promise<Result<HealthResponse, ApiError>> {
     try {
       const { data } = await api.get<HealthResponse>('/health');
-      return Result.ok(data);
+      return Ok(data);
     } catch (e) {
-      return Result.err(e as ApiError);
+      return Err(e as ApiError);
     }
   }
 }

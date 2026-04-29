@@ -117,7 +117,7 @@ export default function PatientDrawer({
           <div className="pt-12 pb-8">
             <div className="flex items-start justify-between mb-6">
               <div className="flex items-center space-x-5">
-                <div className="w-20 h-20 rounded-[32px] bg-indigo-600 text-white flex items-center justify-center text-3xl font-black shadow-lg shadow-indigo-100">
+                <div className="w-20 h-20 rounded-[32px] bg-sky-600 text-white flex items-center justify-center text-3xl font-black shadow-lg shadow-sky-100">
                   {patient?.first_name?.[0]}{patient?.last_name?.[0]}
                 </div>
                 <div>
@@ -127,7 +127,7 @@ export default function PatientDrawer({
                     <span>&middot;</span>
                     <span>{patient?.gender?.toLowerCase()}</span>
                     <span>&middot;</span>
-                    <span className="text-indigo-500 font-black">ID: {patient?.patient_id}</span>
+                    <span className="text-sky-500 font-black">ID: {patient?.patient_id}</span>
                   </div>
                 </div>
               </div>
@@ -189,7 +189,7 @@ export default function PatientDrawer({
               )}
               {a?.family_history && (
                 <div className="flex items-center bg-white border border-slate-100 rounded-2xl p-4 shadow-sm">
-                  <div className="p-2 bg-indigo-50 rounded-xl mr-3"><Dna className="w-5 h-5 text-indigo-500" /></div>
+                  <div className="p-2 bg-sky-50 rounded-xl mr-3"><Dna className="w-5 h-5 text-sky-500" /></div>
                   <span className="text-sm font-bold text-slate-700">Family History</span>
                 </div>
               )}
@@ -222,7 +222,7 @@ export default function PatientDrawer({
           <div className="mb-10">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-black text-slate-400 uppercase tracking-[0.15em]">Family Care Group</h3>
-              <span className="text-[10px] font-black text-indigo-500 uppercase tracking-widest cursor-pointer">Manage +</span>
+              <span className="text-[10px] font-black text-sky-500 uppercase tracking-widest cursor-pointer">Manage +</span>
             </div>
             {familyMembers.length > 0 ? (
               <div className="space-y-3">
@@ -239,7 +239,7 @@ export default function PatientDrawer({
                         </div>
                       </div>
                     </div>
-                    <span className="bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border border-indigo-100">
+                    <span className="bg-sky-50 text-sky-600 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border border-sky-100">
                       {member.relationship}
                     </span>
                   </div>

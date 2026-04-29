@@ -84,15 +84,15 @@ export default function DoctorChat({ patientId, patientName }: DoctorChatProps) 
           <h4 className="text-sm font-black text-slate-800 tracking-tight">Ask about {patientName}'s history</h4>
           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Powered by Hela AI &middot; French/English</p>
         </div>
-        <Sparkles className="w-4 h-4 text-indigo-500" />
+        <Sparkles className="w-4 h-4 text-sky-500" />
       </div>
 
       {/* Chat Area */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 space-y-4 scrollbar-hide">
         {messages.length === 0 && (
           <div className="h-full flex flex-col items-center justify-center text-center">
-            <div className="p-4 bg-indigo-50 rounded-3xl mb-4">
-              <Sparkles className="w-6 h-6 text-indigo-500" />
+            <div className="p-4 bg-sky-50 rounded-3xl mb-4">
+              <Sparkles className="w-6 h-6 text-sky-500" />
             </div>
             <p className="text-xs font-bold text-slate-400 mb-6 uppercase tracking-widest">No clinical messages yet</p>
             <div className="flex flex-wrap justify-center gap-2">
@@ -113,7 +113,7 @@ export default function DoctorChat({ patientId, patientName }: DoctorChatProps) 
           <div key={idx} className={`flex ${msg.role === 'doctor' ? 'justify-end' : 'justify-start'}`}>
             <div className={`max-w-[85%] px-5 py-4 rounded-[24px] ${
               msg.role === 'doctor' 
-                ? 'bg-indigo-600 text-white rounded-br-sm shadow-md shadow-indigo-100' 
+                ? 'bg-sky-600 text-white rounded-br-sm shadow-md shadow-sky-100' 
                 : 'bg-slate-100 text-slate-800 rounded-bl-sm border border-slate-200'
             }`}>
               <p className="text-sm font-medium leading-relaxed">{msg.text}</p>
@@ -129,7 +129,7 @@ export default function DoctorChat({ patientId, patientName }: DoctorChatProps) 
         {loading && (
           <div className="flex justify-start">
             <div className="bg-slate-50 px-5 py-4 rounded-[24px] rounded-bl-sm border border-slate-100">
-              <Loader2 className="w-4 h-4 animate-spin text-indigo-400" />
+              <Loader2 className="w-4 h-4 animate-spin text-sky-400" />
             </div>
           </div>
         )}
@@ -142,13 +142,13 @@ export default function DoctorChat({ patientId, patientName }: DoctorChatProps) 
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask in French or English..."
-          className="flex-1 bg-white border border-slate-200 rounded-2xl px-5 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 font-medium"
+          className="flex-1 bg-white border border-slate-200 rounded-2xl px-5 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 font-medium"
           disabled={loading}
         />
         <button
           type="submit"
           disabled={loading || !input.trim()}
-          className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white p-3 rounded-2xl shadow-lg shadow-indigo-100 transition-all flex-shrink-0"
+          className="bg-sky-600 hover:bg-sky-700 disabled:opacity-50 text-white p-3 rounded-2xl shadow-lg shadow-sky-100 transition-all flex-shrink-0"
         >
           {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
         </button>

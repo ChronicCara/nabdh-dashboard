@@ -118,9 +118,9 @@ export default function VitalTrendCharts({ history, loading }: VitalTrendChartsP
             <Area 
               name="Risk Score" 
               type="monotone" 
-              dataKey="normalized_score" 
-              stroke="#6366f1" 
-              strokeWidth={4} 
+              dataKey="normalized_score"
+              stroke="#0EA5E9"
+              strokeWidth={4}
               fillOpacity={1} 
               fill="url(#riskGradient)" 
             />

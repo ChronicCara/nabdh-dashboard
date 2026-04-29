@@ -43,8 +43,8 @@ export default function GlossarySearch() {
   return (
     <div className="flex flex-col h-full">
       <div className="flex items-center gap-3 mb-6">
-        <div className="p-3 bg-indigo-50 rounded-2xl">
-          <BookOpen className="w-6 h-6 text-indigo-500" />
+        <div className="p-3 bg-sky-50 rounded-2xl">
+          <BookOpen className="w-6 h-6 text-sky-500" />
         </div>
         <div>
           <h3 className="text-lg font-black text-slate-800 tracking-tight">Glossary Search</h3>
@@ -59,7 +59,7 @@ export default function GlossarySearch() {
             key={lang}
             onClick={() => setLanguage(lang)}
             className={`flex-1 py-2 text-[11px] font-black uppercase tracking-widest rounded-xl transition-all ${
-              language === lang ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-600'
+              language === lang ? 'bg-sky-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-600'
             }`}
           >
             {lang === 'darija' ? 'Darija' : lang === 'french' ? 'Français' : 'English'}
@@ -70,14 +70,14 @@ export default function GlossarySearch() {
       {/* Search Input */}
       <div className="relative mb-8">
         <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
-          {loading ? <Loader2 className="w-5 h-5 text-indigo-400 animate-spin" /> : <Search className="w-5 h-5 text-slate-400" />}
+          {loading ? <Loader2 className="w-5 h-5 text-sky-400 animate-spin" /> : <Search className="w-5 h-5 text-slate-400" />}
         </div>
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={placeholders[language]}
-          className={`w-full bg-white border-2 border-slate-100 rounded-3xl py-4 pl-14 pr-6 text-sm font-bold focus:outline-none focus:border-indigo-500/30 transition-all ${
+          className={`w-full bg-white border-2 border-slate-100 rounded-3xl py-4 pl-14 pr-6 text-sm font-bold focus:outline-none focus:border-sky-500/30 transition-all ${
             language === 'darija' ? 'text-right font-arabic text-lg' : ''
           }`}
           dir={language === 'darija' ? 'rtl' : 'ltr'}
@@ -92,12 +92,12 @@ export default function GlossarySearch() {
           ))
         ) : results.length > 0 ? (
           results.map((res, idx) => (
-            <div key={idx} className="group bg-slate-50 hover:bg-indigo-50/50 border border-slate-100 hover:border-indigo-100 rounded-[28px] p-5 transition-all cursor-default">
+            <div key={idx} className="group bg-slate-50 hover:bg-sky-50/50 border border-slate-100 hover:border-sky-100 rounded-[28px] p-5 transition-all cursor-default">
               <div className="flex items-start justify-between gap-4 mb-2">
                 <p className="text-xl font-black text-slate-800 text-right font-arabic" dir="rtl">
                   {res.darija}
                 </p>
-                <span className="flex-shrink-0 bg-white px-2.5 py-1 rounded-full text-[9px] font-black text-indigo-500 uppercase tracking-widest shadow-sm border border-slate-50">
+                <span className="flex-shrink-0 bg-white px-2.5 py-1 rounded-full text-[9px] font-black text-sky-500 uppercase tracking-widest shadow-sm border border-slate-50">
                   {(res.similarity * 100).toFixed(0)}% Match
                 </span>
               </div>

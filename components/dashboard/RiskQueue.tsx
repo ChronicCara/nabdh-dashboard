@@ -63,28 +63,28 @@ export default function RiskQueue({
                 key={item.patient_id}
                 onClick={() => onPatientSelect(item.patient_id)}
                 className={`relative group flex items-center px-6 py-5 cursor-pointer transition-all duration-300 ${
-                  isSelected ? 'bg-indigo-50/80' : 'hover:bg-slate-50/80'
+                  isSelected ? 'bg-sky-50/80' : 'hover:bg-slate-50/80'
                 }`}
               >
                 {/* Risk Indicator Bar or Selected Bar */}
                 <div className={`absolute left-0 top-0 bottom-0 w-1 ${
-                  isSelected 
-                    ? 'bg-indigo-600' 
-                    : item.category === 'HIGH' ? 'bg-red-500' 
-                    : item.category === 'MODERATE' ? 'bg-amber-500' 
+                  isSelected
+                    ? 'bg-sky-500'
+                    : item.category === 'HIGH' ? 'bg-red-500'
+                    : item.category === 'MODERATE' ? 'bg-amber-500'
                     : 'bg-green-500'
                 }`} />
 
                 <div className="flex items-center gap-4 flex-1">
                   <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-sm font-black shadow-sm ${
-                    isSelected ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-400'
+                    isSelected ? 'bg-sky-500 text-white' : 'bg-slate-100 text-slate-400'
                   }`}>
                     {initials}
                   </div>
-                  
+
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <p className={`font-bold truncate ${isSelected ? 'text-indigo-900' : 'text-slate-800'}`}>
+                      <p className={`font-bold truncate ${isSelected ? 'text-sky-900' : 'text-slate-800'}`}>
                         {patient ? `${patient.first_name} ${patient.last_name}` : 'Unknown Patient'}
                       </p>
                       {item.category === 'HIGH' && (

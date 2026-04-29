@@ -98,7 +98,7 @@ export default function ClinicalEntityCard({ entities, riskAssessment, loading }
             <ScrollText className="w-4 h-4" />
             <h4 className="text-[10px] font-black uppercase tracking-widest">AI Clinical Synthesis</h4>
           </div>
-          <p className="text-sm font-medium text-slate-600 leading-relaxed italic border-l-4 border-indigo-200 pl-5">
+          <p className="text-sm font-medium text-slate-600 leading-relaxed italic border-l-4 border-sky-200 pl-5">
             "{entities?.clinical_note || 'Analysis in progress...'}"
           </p>
         </div>
@@ -129,7 +129,7 @@ export default function ClinicalEntityCard({ entities, riskAssessment, loading }
               <ul className="space-y-2">
                 {riskAssessment.recommendations.slice(0, 3).map((r, i) => (
                   <li key={i} className="flex items-start gap-3 text-xs font-bold text-slate-600 leading-normal">
-                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-300 mt-1.5 flex-shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-sky-300 mt-1.5 flex-shrink-0" />
                     {r}
                   </li>
                 ))}

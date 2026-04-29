@@ -229,7 +229,7 @@ export default function DashboardPageClient() {
             className="fixed inset-0 bg-slate-900/5 backdrop-blur-sm z-30" 
             onClick={() => setShowGlossary(false)} 
           />
-          <div className="fixed left-64 top-16 w-[360px] h-[calc(100vh-64px)] bg-white border-r border-slate-100 shadow-2xl z-40 animate-in slide-in-from-left duration-500 ease-out p-8">
+          <div className="fixed left-64 top-16 w-[360px] h-[calc(100vh-64px)] bg-white/95 backdrop-blur-xl border-r border-sky-100/60 shadow-2xl z-40 animate-in slide-in-from-left duration-500 ease-out p-8">
             <button 
               onClick={() => setShowGlossary(false)}
               className="absolute top-6 right-6 p-2 text-slate-400 hover:text-slate-800 bg-slate-50 rounded-xl transition-all"
@@ -244,12 +244,12 @@ export default function DashboardPageClient() {
       {/* Top Header */}
       <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="flex items-center">
-          <div className="w-16 h-16 rounded-[24px] bg-indigo-600 flex items-center justify-center mr-5 shadow-lg shadow-indigo-100 border-2 border-white">
+          <div className="w-16 h-16 rounded-[24px] bg-sky-500 flex items-center justify-center mr-5 shadow-lg shadow-sky-200/60 border-2 border-white">
             <span className="text-2xl font-bold text-white">NH</span>
           </div>
           <div>
             <div className="flex items-center space-x-2 mb-1">
-              <span className="text-[13px] font-black text-indigo-500 uppercase tracking-widest flex items-center">
+              <span className="text-[13px] font-black text-sky-500 uppercase tracking-widest flex items-center">
                 <Sparkles className="w-3 h-3 mr-1" /> Welcome back
               </span>
             </div>
@@ -260,19 +260,22 @@ export default function DashboardPageClient() {
         </div>
 
         <div className="flex items-center gap-3">
-          <button 
+          <button
             onClick={() => setShowGlossary(true)}
-            className="inline-flex items-center gap-2 bg-white border border-slate-100 px-5 py-3 rounded-[20px] text-xs font-black text-slate-600 hover:bg-slate-50 transition-all shadow-sm"
+            className="inline-flex items-center gap-2 glass-card px-5 py-3 rounded-[20px] text-xs font-black text-slate-600 hover:text-sky-600 hover:bg-sky-50/80 transition-all"
           >
             <BookOpen className="w-4 h-4" />
             GLOSSARY
           </button>
-          <button className="p-3 bg-white border border-slate-100 rounded-[20px] text-slate-400 hover:text-indigo-500 hover:bg-indigo-50 transition-all shadow-sm">
+          <button
+            aria-label="Notifications"
+            className="p-3 glass-card rounded-[20px] text-slate-400 hover:text-sky-500 hover:bg-sky-50/80 transition-all"
+          >
             <Bell className="w-6 h-6" />
           </button>
-          <button 
+          <button
             onClick={() => setShowInviteModal(true)}
-            className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3.5 rounded-[24px] font-black shadow-xl shadow-indigo-100 transition-all duration-300 hover:-translate-y-1 active:scale-95"
+            className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white px-6 py-3.5 rounded-[24px] font-black shadow-xl shadow-sky-200/60 transition-all duration-300 hover:-translate-y-1 active:scale-95"
           >
             <Plus className="w-5 h-5" strokeWidth={3} />
             ADD PATIENT
@@ -288,10 +291,10 @@ export default function DashboardPageClient() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Main Content Area - Risk Queue */}
         <div className="lg:col-span-12">
-          <div className="bg-white rounded-[40px] shadow-sm border border-slate-100 overflow-hidden">
+          <div className="glass-card rounded-[40px] overflow-hidden">
             <div className="p-8 border-b border-slate-50 flex flex-col md:flex-row md:items-center justify-between gap-6">
               <h3 className="text-xl font-black text-slate-800 tracking-tight flex items-center">
-                <UsersIcon className="w-6 h-6 mr-3 text-indigo-500" />
+                <UsersIcon className="w-6 h-6 mr-3 text-sky-500" />
                 AI-Prioritized Risk Queue
               </h3>
               
@@ -331,10 +334,10 @@ export default function DashboardPageClient() {
 
         {/* Global Risk Distribution */}
         <div className="lg:col-span-12 mt-4">
-          <div className="bg-white rounded-[40px] p-8 shadow-sm border border-slate-50">
+          <div className="glass-card rounded-[40px] p-8">
              <div className="flex items-center mb-8">
-               <div className="p-3 bg-indigo-50 rounded-2xl mr-4">
-                 <AlertCircle className="w-6 h-6 text-indigo-500" />
+               <div className="p-3 bg-sky-50 rounded-2xl mr-4">
+                 <AlertCircle className="w-6 h-6 text-sky-500" />
                </div>
                <div>
                  <h3 className="text-xl font-black text-slate-800 tracking-tight">Population Overview</h3>

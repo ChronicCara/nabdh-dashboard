@@ -63,9 +63,9 @@ export default function StatsBar({ stats, loading, pendingCodesCount }: StatsBar
       label: 'Pending Codes',
       value: pendingCodesCount,
       icon: KeyRound,
-      color: 'indigo',
-      bg: 'bg-indigo-50',
-      text: 'text-indigo-600',
+      color: 'sky',
+      bg: 'bg-sky-50',
+      text: 'text-sky-600',
       pulse: pendingCodesCount > 0
     }
   ]
@@ -83,8 +83,8 @@ export default function StatsBar({ stats, loading, pendingCodesCount }: StatsBar
               <Icon className="w-7 h-7" />
               {item.pulse && (
                 <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-indigo-500"></span>
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
                 </span>
               )}
             </div>

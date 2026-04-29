@@ -2,8 +2,87 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  background-color: #F8FAFC;
-  color: #0F172A;
-  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+/* ─────────────────────────────────────────────────────────────────
+   Design tokens — Sky Blue + Glassmorphism (per spec)
+   Sky #0EA5E9 · Light Sky #E0F2FE · Navy #1E293B · Soft Gray #F1F5F9
+   ───────────────────────────────────────────────────────────────── */
+@layer base {
+  :root {
+    /* HSL triplets so we can use Tailwind's <alpha-value> token */
+    --background: 210 40% 98%;        /* slate-50 tinted toward sky */
+    --foreground: 215 28% 17%;        /* slate-800 / Dark Navy */
+    --muted: 210 40% 96%;             /* soft gray */
+    --muted-foreground: 215 16% 47%;  /* slate-500 */
+    --border: 214 32% 91%;            /* slate-200 */
+    --primary: 199 89% 48%;           /* sky-500 #0EA5E9 */
+    --primary-foreground: 0 0% 100%;
+    --accent: 204 94% 94%;            /* sky-100 #E0F2FE */
+    --accent-foreground: 199 89% 30%;
+
+    --radius: 1rem;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   Component utilities
+   ───────────────────────────────────────────────────────────────── */
+@layer components {
+  /* Glass card — 80% white + sky-tinted border + soft sky shadow */
+  .glass-card {
+    background-color: rgba(255, 255, 255, 0.80);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(15, 165, 233, 0.18);
+    box-shadow: 0 8px 32px rgba(15, 165, 233, 0.10);
+  }
+
+  .glass-card-strong {
+    background-color: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(15, 165, 233, 0.20);
+    box-shadow: 0 12px 40px rgba(15, 165, 233, 0.12);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   Cross-browser scrollbar-hide (used by drawers / scroll regions)
+   ───────────────────────────────────────────────────────────────── */
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .font-arabic {
+    font-family: 'Tajawal', 'Cairo', var(--font-urbanist), sans-serif;
+  }
+
+  /* Animate-in helpers (Tailwind keyframes are wired in tailwind.config.ts) */
+  .animate-in {
+    animation-duration: 240ms;
+    animation-fill-mode: both;
+  }
+  .fade-in {
+    animation-name: fade-in;
+  }
+  .slide-in-from-top-2 {
+    animation-name: slide-in-from-top-2;
+  }
+  .slide-in-from-left {
+    animation-name: slide-in-from-left;
+  }
 }

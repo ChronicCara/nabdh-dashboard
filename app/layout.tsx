@@ -1,9 +1,31 @@
 import './globals.css'
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
+import { Urbanist, JetBrains_Mono } from 'next/font/google'
+
+const urbanist = Urbanist({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800', '900'],
+  variable: '--font-urbanist',
+  display: 'swap',
+})
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500', '700'],
+  variable: '--font-jetbrains-mono',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
-  title: 'Nabdh Health App - Doctor Dashboard',
-  description: 'Doctor dashboard for Nabdh Health App',
+  title: 'Nabdh Health — Doctor Dashboard',
+  description:
+    'Apple-Health style command center for chronic care with AI-prioritized risk queue, vitals trends, and Darija nurture messaging.',
+}
+
+export const viewport: Viewport = {
+  themeColor: '#0EA5E9',
+  width: 'device-width',
+  initialScale: 1,
 }
 
 export default function RootLayout({
@@ -12,8 +34,11 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html
+      lang="en"
+      className={`${urbanist.variable} ${jetbrainsMono.variable} bg-background`}
+    >
+      <body className="font-sans antialiased">{children}</body>
     </html>
   )
 }
