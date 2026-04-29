@@ -195,35 +195,28 @@ export async function generatePatientInviteCode(
   doctorName: string
 ): Promise<string | null> {
   try {
-    // Try RPC first
-    const { data, error } = await supabase.rpc('generate_invite_code', {
-      p_doctor_id: doctorId,
-      p_doctor_name: doctorName
-    })
+    // Generate a random code in XXXX-XXXX format
+    const code = Math.random().toString(36).substring(2, 6).toUpperCase() + '-' + 
+                 Math.random().toString(36).substring(2, 6).toUpperCase()
+    
+    const { data, error } = await supabase
+      .from('doctor_invite_codes')
+      .insert({
+        doctor_id: doctorId,
+        code: code,
+        used: false
+      })
+      .select('code')
+      .single()
 
     if (error) {
-      // Fallback: insert directly into doctor_invite_codes
-      const code = Math.random().toString(36).substring(2, 6).toUpperCase() + '-' + 
-                   Math.random().toString(36).substring(2, 6).toUpperCase()
-      
-      const { error: insertError } = await supabase
-        .from('doctor_invite_codes')
-        .insert({
-          doctor_id: doctorId,
-          code: code,
-          used: false
-        })
-
-      if (insertError) {
-        console.error('Insert error:', insertError)
-        return null
-      }
-      return code
+      console.error('Insert invite code error:', error.message, error.details, error.hint, error.code)
+      return null
     }
 
-    return data as string
+    return data?.code || code
   } catch (error) {
-    console.error('Unexpected Error:', error)
+    console.error('Unexpected Error generating invite code:', error)
     return null
   }
 }

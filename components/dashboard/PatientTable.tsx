@@ -1,13 +1,13 @@
 import React from 'react'
 import { PatientWithLatestAssessment } from '../../lib/types'
-import { Search, Users as UsersIcon, ChevronRight, User } from 'lucide-react'
+import { Search, Users as UsersIcon, ChevronRight } from 'lucide-react'
 
 interface PatientTableProps {
   patients: PatientWithLatestAssessment[]
   loading: boolean
   onPatientClick: (patient: PatientWithLatestAssessment) => void
   selectedPatientId: string | null
-  familyCounts?: Record<number, number>
+  familyCounts?: Record<string, number>
 }
 
 export default function PatientTable({ patients, loading, onPatientClick, selectedPatientId, familyCounts }: PatientTableProps) {
@@ -64,19 +64,18 @@ export default function PatientTable({ patients, loading, onPatientClick, select
           const fc = familyCounts?.[patient.id] ?? 0
           const patientIsNew = isNew(a?.assessment_date)
 
-
           return (
             <div 
               key={patient.id} 
               onClick={() => onPatientClick(patient)}
               className={`group flex flex-col lg:flex-row items-start lg:items-center px-8 py-6 transition-all duration-300 cursor-pointer 
-                ${sel ? 'bg-sky-50/60' : 'bg-white hover:bg-slate-50/80'}
+                ${sel ? 'bg-indigo-50/60' : 'bg-white hover:bg-slate-50/80'}
               `}
             >
               {/* Patient Info */}
               <div className="flex-[1.5] flex items-center space-x-4 w-full lg:w-auto">
                 <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-xl font-bold shadow-sm border transition-all duration-300 group-hover:scale-105 ${
-                  sel ? 'bg-sky-500 text-white border-sky-400' : 'bg-sky-50 text-sky-600 border-sky-100'
+                  sel ? 'bg-indigo-600 text-white border-indigo-400' : 'bg-slate-50 text-slate-600 border-slate-100'
                 }`}>
                   {patient.first_name?.[0]}{patient.last_name?.[0]}
                 </div>
@@ -143,7 +142,7 @@ export default function PatientTable({ patients, loading, onPatientClick, select
                 <div className="lg:hidden text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1">Engagement</div>
                 <div className="flex items-center space-x-4">
                   {fc > 0 && (
-                    <div className="flex items-center text-sky-600 bg-sky-50 px-2 py-1 rounded-lg">
+                    <div className="flex items-center text-indigo-600 bg-indigo-50 px-2 py-1 rounded-lg">
                       <UsersIcon className="w-4 h-4 mr-1.5" />
                       <span className="text-xs font-bold">{fc}</span>
                     </div>
@@ -156,7 +155,7 @@ export default function PatientTable({ patients, loading, onPatientClick, select
 
               {/* Action */}
               <div className="w-12 mt-4 lg:mt-0 flex justify-end lg:justify-center w-full lg:w-auto">
-                <div className={`p-2 rounded-xl transition-all duration-300 ${sel ? 'bg-sky-500 text-white' : 'bg-slate-100 text-slate-400 group-hover:bg-sky-100 group-hover:text-sky-600'}`}>
+                <div className={`p-2 rounded-xl transition-all duration-300 ${sel ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-400 group-hover:bg-indigo-100 group-hover:text-indigo-600'}`}>
                   <ChevronRight className="w-5 h-5" />
                 </div>
               </div>
