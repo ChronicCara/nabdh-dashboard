@@ -1,19 +1,19 @@
 export interface Patient {
-  id: number
-  patient_id: string
+  id: string
+  patient_id?: string
   first_name: string | null
   last_name: string | null
   age: number | null
   gender: string | null
   medical_history: string | null
   consent_given?: boolean
-  created_at: string
-  updated_at: string
+  created_at?: string
+  updated_at?: string
 }
 
 export interface PatientAssessment {
-  id: number
-  patient_id: number
+  id: number | string
+  patient_id: string
   age: number
   systolic_bp: number
   diastolic_bp: number
@@ -37,7 +37,6 @@ export interface ModelMetric {
 
 export interface PatientWithLatestAssessment extends Patient {
   latest_assessment: PatientAssessment | null
-  access_level?: 'ACTIVE' | 'ARCHIVE_READ_ONLY'
 }
 
 export interface DashboardStats {
@@ -48,27 +47,21 @@ export interface DashboardStats {
 }
 
 export interface InviteCode {
-  id: number
+  id: string
   code: string
   doctor_id: string
   used: boolean
-  used_by_patient_id: number | null
-  created_at: string
-  expires_at: string
 }
 
 export interface DoctorPatientRelationship {
-  id: number
+  id: string
   doctor_id: string
-  patient_id: number
-  access_level: 'ACTIVE' | 'ARCHIVE_READ_ONLY'
-  treatment_start: string
-  treatment_end: string | null
+  patient_id: string
 }
 
 export interface FamilyMember {
-  id: number
-  patient_id: number
+  id: number | string
+  patient_id: number | string
   first_name: string | null
   last_name: string | null
   relationship: string | null

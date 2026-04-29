@@ -14,8 +14,7 @@ import {
   getRiskDistributionToday, 
   getPatientAssessmentHistory,
   getActiveInviteCodes,
-  getPatientFamilyMembers,
-  getNewPatientsSince
+  getPatientFamilyMembers
 } from '../../lib/queries'
 
 import StatsBar from '../dashboard/StatsBar'
@@ -60,11 +59,9 @@ export default function DashboardPageClient() {
   const [searchQuery, setSearchQuery] = useState('')
   const [riskFilter, setRiskFilter] = useState<'ALL' | 'LOW' | 'MODERATE' | 'HIGH'>('ALL')
   const [showInviteModal, setShowInviteModal] = useState(false)
-  const [familyCounts, setFamilyCounts] = useState<Record<number, number>>({})
-  const [familyMembersByPatient, setFamilyMembersByPatient] = useState<Record<number, FamilyMember[]>>({})
+  const [familyCounts, setFamilyCounts] = useState<Record<string, number>>({})
+  const [familyMembersByPatient, setFamilyMembersByPatient] = useState<Record<string, FamilyMember[]>>({})
   const [pendingCodesCount, setPendingCodesCount] = useState(0)
-  const [newPatientsToday, setNewPatientsToday] = useState<PatientWithLatestAssessment[]>([])
-  const [showNewPatientsBanner, setShowNewPatientsBanner] = useState(true)
 
   const [loading, setLoading] = useState({
     stats: true,
@@ -77,7 +74,6 @@ export default function DashboardPageClient() {
   useEffect(() => {
     let isMounted = true
     const fetchAll = async () => {
-      const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
 
       Promise.all([
         getDashboardStats(DOCTOR_ID).then(res => {
@@ -90,8 +86,8 @@ export default function DashboardPageClient() {
           if (isMounted) {
             setPatients(res)
             setLoading(prev => ({ ...prev, patients: false }))
-            const familyData: Record<number, FamilyMember[]> = {}
-            const counts: Record<number, number> = {}
+            const familyData: Record<string, FamilyMember[]> = {}
+            const counts: Record<string, number> = {}
             await Promise.all(res.map(async (p) => {
               const members = await getPatientFamilyMembers(p.id)
               familyData[p.id] = members
@@ -111,9 +107,6 @@ export default function DashboardPageClient() {
         }),
         getActiveInviteCodes(DOCTOR_ID).then(res => {
           if (isMounted) setPendingCodesCount(res.length)
-        }),
-        getNewPatientsSince(DOCTOR_ID, yesterday).then(res => {
-          if (isMounted) setNewPatientsToday(res)
         })
       ]).catch(() => {
         if (isMounted) setError('Connection error. Please check your Supabase credentials.')
@@ -185,30 +178,7 @@ export default function DashboardPageClient() {
         </div>
       </div>
 
-      {/* New Patients Notification */}
-      {newPatientsToday.length > 0 && showNewPatientsBanner && (
-        <div className="mb-8 bg-gradient-to-r from-sky-500 to-sky-400 rounded-[32px] p-6 flex items-center justify-between shadow-xl shadow-sky-100 animate-in fade-in slide-in-from-top-4 duration-700">
-          <div className="flex items-center gap-5">
-            <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/30">
-              <Sparkles className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <p className="text-white font-black text-lg tracking-tight">
-                New clinical activity!
-              </p>
-              <p className="text-sky-50 text-sm font-medium">
-                {newPatientsToday.length} new patient(s) have joined your care group today.
-              </p>
-            </div>
-          </div>
-          <button 
-            onClick={() => setShowNewPatientsBanner(false)}
-            className="w-10 h-10 bg-white/20 hover:bg-white/30 text-white rounded-xl flex items-center justify-center transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-      )}
+
 
       {/* Stats Section */}
       <div className="mb-10">

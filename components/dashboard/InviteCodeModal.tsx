@@ -107,7 +107,7 @@ export default function InviteCodeModal({ isOpen, doctorId, doctorName, onClose 
                 </div>
               </div>
               <h2 className="text-2xl font-black text-slate-800 tracking-tight mb-2">Code Generated</h2>
-              <p className="text-sm text-slate-400 font-medium mb-8">Valid for 48 hours &middot; Single use only</p>
+              <p className="text-sm text-slate-400 font-medium mb-8">Single use only</p>
               
               <div className="bg-slate-50 border-2 border-dashed border-slate-200 rounded-3xl p-8 mb-8">
                 <span ref={codeRef} className="font-mono text-4xl font-black tracking-[0.2em] text-slate-800 select-all">

@@ -6,7 +6,7 @@ interface PatientTableProps {
   patients: PatientWithLatestAssessment[]
   loading: boolean
   onPatientClick: (patient: PatientWithLatestAssessment) => void
-  selectedPatientId: number | null
+  selectedPatientId: string | null
   familyCounts?: Record<number, number>
 }
 
@@ -44,11 +44,7 @@ export default function PatientTable({ patients, loading, onPatientClick, select
     return new Date(date).getTime() > Date.now() - 86400000
   }
 
-  const sortedPatients = [...patients].sort((a, b) => {
-    if (a.access_level === 'ARCHIVE_READ_ONLY' && b.access_level !== 'ARCHIVE_READ_ONLY') return 1
-    if (a.access_level !== 'ARCHIVE_READ_ONLY' && b.access_level === 'ARCHIVE_READ_ONLY') return -1
-    return 0
-  })
+  const sortedPatients = [...patients]
 
   return (
     <div className="w-full">
@@ -66,8 +62,8 @@ export default function PatientTable({ patients, loading, onPatientClick, select
           const sel = selectedPatientId === patient.id
           const a = patient.latest_assessment
           const fc = familyCounts?.[patient.id] ?? 0
-          const isTransferred = patient.access_level === 'ARCHIVE_READ_ONLY'
           const patientIsNew = isNew(a?.assessment_date)
+
 
           return (
             <div 
@@ -75,7 +71,6 @@ export default function PatientTable({ patients, loading, onPatientClick, select
               onClick={() => onPatientClick(patient)}
               className={`group flex flex-col lg:flex-row items-start lg:items-center px-8 py-6 transition-all duration-300 cursor-pointer 
                 ${sel ? 'bg-sky-50/60' : 'bg-white hover:bg-slate-50/80'}
-                ${isTransferred ? 'opacity-60' : ''}
               `}
             >
               {/* Patient Info */}
@@ -90,14 +85,9 @@ export default function PatientTable({ patients, loading, onPatientClick, select
                     <p className="font-bold text-slate-800 text-[16px] tracking-tight">
                       {patient.first_name} {patient.last_name}
                     </p>
-                    {patientIsNew && !isTransferred && (
+                    {patientIsNew && (
                       <span className="ml-2 bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full">
                         New
-                      </span>
-                    )}
-                    {isTransferred && (
-                      <span className="ml-2 bg-slate-100 text-slate-400 text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded border border-slate-200">
-                        Archive
                       </span>
                     )}
                   </div>

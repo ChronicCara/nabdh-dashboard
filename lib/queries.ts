@@ -7,12 +7,11 @@ export async function getDashboardStats(doctorId: string): Promise<DashboardStat
     today.setUTCHours(0, 0, 0, 0)
     const todayStr = today.toISOString()
 
-    // Get doctor's patient IDs first
+    // Get doctor's patient IDs (no access_level filter - new schema)
     const { data: relationships } = await supabase
       .from('doctor_patient_relationships')
       .select('patient_id')
       .eq('doctor_id', doctorId)
-      .eq('access_level', 'ACTIVE')
     
     const patientIds = (relationships || []).map(r => r.patient_id)
 
@@ -74,21 +73,19 @@ export async function getDashboardStats(doctorId: string): Promise<DashboardStat
 
 export async function getAllPatientsWithLatestAssessment(doctorId: string): Promise<PatientWithLatestAssessment[]> {
   try {
+    // New schema: no access_level column
     const { data: relationships, error: relError } = await supabase
       .from('doctor_patient_relationships')
-      .select('patient_id, access_level')
+      .select('patient_id')
       .eq('doctor_id', doctorId)
     
     if (relError || !relationships || relationships.length === 0) return []
     
     const patientIds = relationships.map(r => r.patient_id)
-    const accessLevels = relationships.reduce((acc, curr) => {
-      acc[curr.patient_id] = curr.access_level
-      return acc
-    }, {} as Record<number, string>)
 
+    // New schema: patient data comes from profiles table
     const { data: patients, error } = await supabase
-      .from('patients')
+      .from('profiles')
       .select('*')
       .in('id', patientIds)
     
@@ -106,8 +103,7 @@ export async function getAllPatientsWithLatestAssessment(doctorId: string): Prom
         
         return {
           ...patient,
-          latest_assessment: (assessment as PatientAssessment) || null,
-          access_level: accessLevels[patient.id] as any
+          latest_assessment: (assessment as PatientAssessment) || null
         }
       })
     )
@@ -120,16 +116,31 @@ export async function getAllPatientsWithLatestAssessment(doctorId: string): Prom
 }
 
 export async function getPatientAssessmentHistory(
-  patientId: number, 
+  patientId: string | number, 
   limit: number = 10
 ): Promise<PatientAssessment[]> {
   try {
+    // Try the RPC first, fall back to direct query
     const { data, error } = await supabase.rpc('get_patient_assessments', {
       p_patient_id: patientId,
       limit_results: limit
     })
     
-    if (error || !data) return []
+    if (error || !data) {
+      // Fallback: direct query if RPC doesn't exist
+      const { data: directData, error: directError } = await supabase
+        .from('patient_assessments')
+        .select('*')
+        .eq('patient_id', patientId)
+        .order('assessment_date', { ascending: false })
+        .limit(limit)
+
+      if (directError || !directData) return []
+
+      return (directData as PatientAssessment[]).sort(
+        (a, b) => new Date(a.assessment_date).getTime() - new Date(b.assessment_date).getTime()
+      )
+    }
 
     // Return ordered by assessment_date ASC (oldest -> newest for charts)
     return (data as PatientAssessment[]).sort(
@@ -184,14 +195,30 @@ export async function generatePatientInviteCode(
   doctorName: string
 ): Promise<string | null> {
   try {
+    // Try RPC first
     const { data, error } = await supabase.rpc('generate_invite_code', {
       p_doctor_id: doctorId,
       p_doctor_name: doctorName
     })
 
     if (error) {
-      console.error('Supabase RPC Error:', error.message, error.details, error.hint)
-      return null
+      // Fallback: insert directly into doctor_invite_codes
+      const code = Math.random().toString(36).substring(2, 6).toUpperCase() + '-' + 
+                   Math.random().toString(36).substring(2, 6).toUpperCase()
+      
+      const { error: insertError } = await supabase
+        .from('doctor_invite_codes')
+        .insert({
+          doctor_id: doctorId,
+          code: code,
+          used: false
+        })
+
+      if (insertError) {
+        console.error('Insert error:', insertError)
+        return null
+      }
+      return code
     }
 
     return data as string
@@ -205,13 +232,12 @@ export async function getActiveInviteCodes(
   doctorId: string
 ): Promise<InviteCode[]> {
   try {
+    // New schema: no expires_at or created_at columns
     const { data, error } = await supabase
       .from('doctor_invite_codes')
       .select('*')
       .eq('doctor_id', doctorId)
       .eq('used', false)
-      .gt('expires_at', new Date().toISOString())
-      .order('created_at', { ascending: false })
 
     if (error || !data) return []
     return data as InviteCode[]
@@ -222,7 +248,7 @@ export async function getActiveInviteCodes(
 }
 
 export async function getPatientFamilyMembers(
-  patientId: number
+  patientId: string | number
 ): Promise<FamilyMember[]> {
   try {
     const { data, error } = await supabase
@@ -238,66 +264,29 @@ export async function getPatientFamilyMembers(
   }
 }
 
-export async function getNewPatientsSince(
-  doctorId: string,
-  since: string
-): Promise<PatientWithLatestAssessment[]> {
-  try {
-    const { data: relationships, error: relError } = await supabase
-      .from('doctor_patient_relationships')
-      .select('patient_id')
-      .eq('doctor_id', doctorId)
-      .eq('access_level', 'ACTIVE')
-      .gte('treatment_start', since)
-
-    if (relError || !relationships || relationships.length === 0) return []
-
-    const patientIds = relationships.map(r => r.patient_id)
-
-    const { data: patients, error: pError } = await supabase
-      .from('patients')
-      .select('*')
-      .in('id', patientIds)
-
-    if (pError || !patients) return []
-
-    const patientsWithAssessments = await Promise.all(
-      patients.map(async (patient) => {
-        const { data: assessment } = await supabase
-          .from('patient_assessments')
-          .select('*')
-          .eq('patient_id', patient.id)
-          .order('assessment_date', { ascending: false })
-          .limit(1)
-          .single()
-
-        return {
-          ...patient,
-          latest_assessment: (assessment as PatientAssessment) || null
-        }
-      })
-    )
-
-    return patientsWithAssessments
-  } catch (error) {
-    console.error('Error fetching new patients:', error)
-    return []
-  }
-}
-
 export async function usePatientInviteCode(
   code: string,
-  patientId: number
+  patientId: string
 ): Promise<{ success: boolean; message: string }> {
   try {
+    // Try RPC first
     const { data, error } = await supabase.rpc('use_invite_code', {
       p_code: code,
       p_patient_id: patientId
     })
 
     if (error) {
-      console.error('Error using invite code:', error)
-      return { success: false, message: error.message }
+      // Fallback: mark code as used directly
+      const { error: updateError } = await supabase
+        .from('doctor_invite_codes')
+        .update({ used: true })
+        .eq('code', code)
+        .eq('used', false)
+
+      if (updateError) {
+        return { success: false, message: updateError.message }
+      }
+      return { success: true, message: 'Invite code used successfully' }
     }
 
     return { success: true, message: 'Invite code used successfully' }
@@ -306,4 +295,3 @@ export async function usePatientInviteCode(
     return { success: false, message: 'An unexpected error occurred' }
   }
 }
-
