@@ -10,13 +10,22 @@
  * timing, retry, and recovery metadata.
  */
 
-import { supabase } from '../supabase'
 import { HelaApiService } from '../api/HelaApiService'
 import { diagnosticsLogger } from './logger'
 import type { IntegrationName } from './types'
 import type { ApiError } from '../api/types'
 
 type SerializedError = { name?: string; message: string; type?: string }
+
+// Lazy-load Supabase to avoid init errors in the diagnostics runner
+function getSupabase() {
+  try {
+    const { supabase } = require('../supabase')
+    return supabase
+  } catch (e) {
+    return null
+  }
+}
 
 export type CheckOutcome =
   | {
@@ -39,6 +48,8 @@ export interface CheckDefinition {
   run: () => Promise<CheckOutcome>
   /** When true, allow retries on failure. Defaults to true. */
   retryable?: boolean
+  /** When true, skip this check (e.g. when required env is missing) */
+  skip?: boolean
 }
 
 /* ------------------------------------------------------------------ */
@@ -113,8 +124,17 @@ function checkSupabaseTable(table: (typeof SUPABASE_TABLES)[number]): CheckDefin
     id: `supabase.table.${table}`,
     name: `Supabase table: ${table}`,
     integration: 'supabase',
+    skip: !process.env.NEXT_PUBLIC_SUPABASE_URL,
     run: async () => {
-      const { error, count } = await supabase
+      const sb = getSupabase()
+      if (!sb) {
+        return {
+          ok: false,
+          message: 'Supabase not initialized (missing env)',
+        }
+      }
+
+      const { error, count } = await sb
         .from(table)
         .select('*', { count: 'exact', head: true })
 
@@ -152,8 +172,17 @@ function checkSupabaseRpc(rpc: (typeof SUPABASE_RPCS)[number]): CheckDefinition 
     id: `supabase.rpc.${rpc.name}`,
     name: `Supabase RPC: ${rpc.name}`,
     integration: 'supabase',
+    skip: !process.env.NEXT_PUBLIC_SUPABASE_URL,
     run: async () => {
-      const { error } = await supabase.rpc(rpc.name, rpc.args)
+      const sb = getSupabase()
+      if (!sb) {
+        return {
+          ok: false,
+          message: 'Supabase not initialized (missing env)',
+        }
+      }
+
+      const { error } = await sb.rpc(rpc.name, rpc.args)
 
       // PGRST202 = function not found. Anything else = function exists, we
       // just don't have data — that still proves the connection is linked.

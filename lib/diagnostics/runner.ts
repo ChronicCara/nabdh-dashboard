@@ -29,6 +29,20 @@ async function runSingleCheck(
   def: CheckDefinition,
   maxAttempts: number
 ): Promise<CheckResult> {
+  if (def.skip) {
+    diagnosticsLogger.info(def.integration, def.id, 'skipped (env not configured)', {})
+    return {
+      id: def.id,
+      name: def.name,
+      integration: def.integration,
+      status: 'skipped',
+      durationMs: 0,
+      attempts: 0,
+      recovered: false,
+      message: 'Skipped (env not configured)',
+    }
+  }
+
   const retryable = def.retryable !== false
   const attempts = retryable ? maxAttempts : 1
   const started = Date.now()
