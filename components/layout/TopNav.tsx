@@ -13,6 +13,7 @@ const PAGE_TITLES: Record<string, string> = {
   '/doctor/patients': 'Patients',
   '/doctor/alerts': 'Alerts',
   '/doctor/reports': 'Reports & Analytics',
+  '/doctor/diagnostics': 'Integration Diagnostics',
   '/doctor/settings': 'Settings',
 }
 

@@ -11,6 +11,7 @@ import {
   Settings,
   ShieldPlus,
   LayoutDashboard,
+  Activity,
 } from 'lucide-react'
 
 interface NavItem {
@@ -25,6 +26,7 @@ const NAV_ITEMS: NavItem[] = [
   { name: 'Patients', href: '/doctor/patients', icon: Users },
   { name: 'Alerts', href: '/doctor/alerts', icon: Bell, badge: 3 },
   { name: 'Reports', href: '/doctor/reports', icon: BarChart2 },
+  { name: 'Diagnostics', href: '/doctor/diagnostics', icon: Activity },
   { name: 'Settings', href: '/doctor/settings', icon: Settings },
 ]
 
