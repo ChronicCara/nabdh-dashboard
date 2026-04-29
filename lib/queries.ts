@@ -288,3 +288,34 @@ export async function usePatientInviteCode(
     return { success: false, message: 'An unexpected error occurred' }
   }
 }
+
+export async function searchGlossary(query: string) {
+  try {
+    const { data, error } = await supabase
+      .from('medical_glossary')
+      .select('*')
+      .or(`darija_term.ilike.%${query}%,french_term.ilike.%${query}%,english_term.ilike.%${query}%,category.ilike.%${query}%`)
+      .limit(10)
+
+    if (error) throw error
+    return data || []
+  } catch (error) {
+    console.error('Error searching glossary:', error)
+    return []
+  }
+}
+
+export async function getAllGlossaryCategories() {
+  try {
+    const { data, error } = await supabase
+      .from('medical_glossary')
+      .select('category')
+    
+    if (error) throw error
+    const categories = Array.from(new Set(data.map(item => item.category)))
+    return categories
+  } catch (error) {
+    console.error('Error fetching glossary categories:', error)
+    return []
+  }
+}

@@ -47,24 +47,35 @@ export default function RiskChart({ data, loading }: RiskChartProps) {
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-      <h3 className="text-sm font-semibold text-slate-800 mb-6 uppercase tracking-wider">Risk Distribution — Today</h3>
-      <div className="h-[200px] w-full">
-        {typeof window !== 'undefined' && (
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-              <XAxis dataKey="risk_level" tick={{ fontSize: 12, fill: '#64748b', fontWeight: 600 }} tickMargin={12} axisLine={false} tickLine={false} />
-              <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: '#64748b' }} axisLine={false} tickLine={false} />
-              <Tooltip content={<CustomTooltip />} cursor={{ fill: '#f8fafc' }} />
-              <Bar dataKey="count" radius={[6, 6, 0, 0]} maxBarSize={60}>
-                {chartData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={getColor(entry.risk_level)} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        )}
-      </div>
+    <div className="h-full w-full">
+      {typeof window !== 'undefined' && (
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+            <XAxis 
+              dataKey="risk_level" 
+              tick={{ fontSize: 10, fill: '#cbd5e1', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.1em' }} 
+              tickMargin={20} 
+              axisLine={false} 
+              tickLine={false} 
+            />
+            <YAxis 
+              allowDecimals={false} 
+              tick={{ fontSize: 10, fill: '#cbd5e1', fontWeight: 700 }} 
+              axisLine={false} 
+              tickLine={false} 
+            />
+            <Tooltip 
+              content={<CustomTooltip />} 
+              cursor={{ fill: 'rgba(241, 245, 249, 0.5)', radius: 12 }} 
+            />
+            <Bar dataKey="count" radius={[12, 12, 12, 12]} maxBarSize={40}>
+              {chartData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={getColor(entry.risk_level)} />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      )}
     </div>
   )
 }

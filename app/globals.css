@@ -9,17 +9,17 @@
 @layer base {
   :root {
     /* HSL triplets so we can use Tailwind's <alpha-value> token */
-    --background: 210 40% 98%;        /* slate-50 tinted toward sky */
-    --foreground: 215 28% 17%;        /* slate-800 / Dark Navy */
-    --muted: 210 40% 96%;             /* soft gray */
-    --muted-foreground: 215 16% 47%;  /* slate-500 */
-    --border: 214 32% 91%;            /* slate-200 */
-    --primary: 199 89% 48%;           /* sky-500 #0EA5E9 */
-    --primary-foreground: 0 0% 100%;
-    --accent: 204 94% 94%;            /* sky-100 #E0F2FE */
-    --accent-foreground: 199 89% 30%;
+    --background: 210 40% 98.5%;      /* #F9FAFB - Very light slate */
+    --foreground: 222 47% 11%;        /* #0F172A - Deep Navy */
+    --muted: 210 40% 96.1%;           /* #F1F5F9 - Light gray */
+    --muted-foreground: 215 16% 46.9%; /* #64748B - Slate 500 */
+    --border: 214 32% 91%;            /* #E2E8F0 - Slate 200 */
+    --primary: 221 83% 53%;           /* #3B82F6 - Vibrant Blue */
+    --primary-foreground: 210 40% 98%;
+    --accent: 217 91% 60%;            /* #60A5FA - Lighter Blue */
+    --accent-foreground: 222 47% 11%;
 
-    --radius: 1rem;
+    --radius: 1.5rem;                 /* 24px - Softer corners */
   }
 
   html {
@@ -40,19 +40,17 @@
 @layer components {
   /* Glass card — 80% white + sky-tinted border + soft sky shadow */
   .glass-card {
-    background-color: rgba(255, 255, 255, 0.80);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(15, 165, 233, 0.18);
-    box-shadow: 0 8px 32px rgba(15, 165, 233, 0.10);
+    background-color: #ffffff;
+    border: 1px solid rgba(226, 232, 240, 0.5);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    border-radius: var(--radius);
   }
 
   .glass-card-strong {
-    background-color: rgba(255, 255, 255, 0.92);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(15, 165, 233, 0.20);
-    box-shadow: 0 12px 40px rgba(15, 165, 233, 0.12);
+    background-color: #ffffff;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    border-radius: var(--radius);
   }
 }
 

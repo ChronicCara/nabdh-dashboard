@@ -6,7 +6,10 @@ import {
   GlossaryResult,
   HelaRiskQueueItem,
   HelaHistoryPoint,
-  HelaDocterChatResponse
+  HelaDocterChatResponse,
+  HelaOnboardRequest,
+  HelaOnboardResponse,
+  Patient
 } from '../types';
 import { ApiError } from './types';
 import { Result, Ok, Err } from 'ts-results';
@@ -39,6 +42,18 @@ export class HelaApiService {
       const { data } = await api.get<HelaDriftResult>(
         `/patient/${patientId}/check-drift`
       );
+      return Ok(data);
+    } catch (e) {
+      return Err(e as ApiError);
+    }
+  }
+
+  /** GET /patient/{id}/profile */
+  static async getPatientProfile(
+    patientId: string
+  ): Promise<Result<Patient, ApiError>> {
+    try {
+      const { data } = await api.get<Patient>(`/patient/${patientId}/profile`);
       return Ok(data);
     } catch (e) {
       return Err(e as ApiError);
@@ -110,6 +125,21 @@ export class HelaApiService {
   static async healthCheck(): Promise<Result<HealthResponse, ApiError>> {
     try {
       const { data } = await api.get<HealthResponse>('/health');
+      return Ok(data);
+    } catch (e) {
+      return Err(e as ApiError);
+    }
+  }
+
+  /** POST /patients/onboard */
+  static async onboardPatient(
+    payload: HelaOnboardRequest
+  ): Promise<Result<HelaOnboardResponse, ApiError>> {
+    try {
+      const { data } = await api.post<HelaOnboardResponse>(
+        '/patients/onboard',
+        payload
+      );
       return Ok(data);
     } catch (e) {
       return Err(e as ApiError);

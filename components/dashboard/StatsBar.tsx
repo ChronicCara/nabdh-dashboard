@@ -77,23 +77,35 @@ export default function StatsBar({ stats, loading, pendingCodesCount }: StatsBar
         return (
           <div 
             key={idx} 
-            className={`bg-white rounded-[32px] p-6 shadow-sm border border-slate-100 transition-all duration-300 hover:shadow-md hover:-translate-y-1 flex flex-col items-center text-center group ${item.alert ? 'border-rose-100 ring-2 ring-rose-50' : ''}`}
+            className="bg-white rounded-[28px] p-6 border border-slate-100 transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/50 hover:-translate-y-1.5 flex flex-col group relative overflow-hidden"
           >
-            <div className={`p-4 ${item.bg} ${item.text} rounded-2xl mb-4 transition-transform duration-300 group-hover:scale-110 relative`}>
-              <Icon className="w-7 h-7" />
-              {item.pulse && (
-                <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
-                </span>
-              )}
+            {/* Subtle background decoration */}
+            <div className={`absolute -right-4 -bottom-4 w-24 h-24 rounded-full opacity-[0.03] transition-transform duration-500 group-hover:scale-150 ${item.bg}`} />
+            
+            <div className="flex items-center gap-4 mb-5">
+              <div className={`p-3.5 ${item.bg} ${item.text} rounded-[20px] shadow-sm relative`}>
+                <Icon className="w-5 h-5" strokeWidth={2.5} />
+                {item.pulse && (
+                  <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary/40 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
+                  </span>
+                )}
+              </div>
+              <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest leading-none">
+                {item.label}
+              </p>
             </div>
-            <p className="text-[13px] font-bold text-slate-400 uppercase tracking-wide mb-1">
-              {item.label}
-            </p>
-            <p className={`text-2xl font-black tracking-tight ${item.alert ? 'text-rose-600' : 'text-slate-800'}`}>
-              {item.value}
-            </p>
+            
+            <div className="flex items-end justify-between">
+              <p className={`text-2xl font-black tracking-tight ${item.alert ? 'text-rose-600' : 'text-slate-800'}`}>
+                {item.value}
+              </p>
+              <div className="flex items-center gap-1 text-[10px] font-bold text-emerald-500 bg-emerald-50 px-2 py-1 rounded-lg">
+                <TrendingUp className="w-3 h-3" />
+                <span>+2.4%</span>
+              </div>
+            </div>
           </div>
         )
       })}

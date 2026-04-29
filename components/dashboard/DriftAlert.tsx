@@ -19,7 +19,7 @@ export default function DriftAlert({ drift, loading }: DriftAlertProps) {
   if (!drift) return null
 
   // If no notification triggered AND drop is low, don't show anything
-  if (!drift.trigger_notification && drift.drop_percentage < 20) {
+  if (!drift.trigger_notification && drift.adherence_drop < 20) {
     return null
   }
 
@@ -37,7 +37,7 @@ export default function DriftAlert({ drift, loading }: DriftAlertProps) {
           <p className="text-xs text-amber-700 font-bold leading-relaxed">
             Short-term adherence: {(drift.short_term_adherence * 100).toFixed(0)}% vs 
             long-term: {(drift.long_term_adherence * 100).toFixed(0)}% — a drop of 
-            {drift.drop_percentage.toFixed(1)}% in the last 3 days
+            {drift.adherence_drop.toFixed(1)}% in the last 3 days
           </p>
 
           {drift.trigger_notification && (

@@ -4,7 +4,10 @@ import {
   HelaHistoryPoint, 
   HelaDriftResult, 
   HelaDocterChatResponse, 
-  GlossaryResult 
+  GlossaryResult,
+  HelaOnboardRequest,
+  HelaOnboardResponse,
+  Patient
 } from './types'
 
 export async function getRiskQueue(): Promise<HelaRiskQueueItem[]> {
@@ -81,4 +84,18 @@ export async function checkHealth(): Promise<boolean> {
   if (!result.ok) return false
   const data = result.val
   return data?.status === "healthy" || data?.status === "ok"
+}
+
+export async function onboardPatient(
+  payload: HelaOnboardRequest
+): Promise<HelaOnboardResponse | null> {
+  const result = await HelaApiService.onboardPatient(payload)
+  return result.ok ? result.val : null
+}
+
+export async function getPatientProfile(
+  patientId: string
+): Promise<Patient | null> {
+  const result = await HelaApiService.getPatientProfile(patientId)
+  return result.ok ? result.val : null
 }

@@ -17,9 +17,9 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Nabdh Health — Doctor Dashboard',
+  title: 'HEALA AI — Clinical Command Center',
   description:
-    'Apple-Health style command center for chronic care with AI-prioritized risk queue, vitals trends, and Darija nurture messaging.',
+    'Worklio-style clinical management platform with AI-prioritized risk queue, vitals trends, and Darija nurture messaging.',
 }
 
 export const viewport: Viewport = {

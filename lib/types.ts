@@ -96,33 +96,60 @@ export interface ClinicalEntities {
 export interface HelaRiskQueueItem {
   patient_id: string
   risk_score: number         // 0-10
-  predicted_risk_level: number   // 0/1/2
-  category: "LOW" | "MODERATE" | "HIGH"
+  predicted_risk_level: 0 | 1 | 2   // 0=Low, 1=Mod, 2=High
+  symptoms: string           // latest note
+  category?: "LOW" | "MODERATE" | "HIGH" // Keep for UI compatibility if needed
 }
 
 export interface HelaHistoryPoint {
   date: string               // ISO timestamp
-  systolic_bp: number | null
-  diastolic_bp: number | null
-  fasting_glucose: number | null
-  bmi: number | null
-  risk_score: number | null  // 0-10
-  category: "LOW" | "MODERATE" | "HIGH" | null
+  systolic: number | null
+  diastolic: number | null
+  glucose: number | null
+  risk: "LOW" | "MODERATE" | "HIGH" | null
   summary?: string
 }
 
 export interface HelaDriftResult {
-  trigger_notification: boolean
-  nurture_message_darija: string
-  short_term_adherence: number   // 3-day rate 0-1
   long_term_adherence: number    // 30-day rate 0-1
-  drop_percentage: number        // % drop from long to short term
+  short_term_adherence: number   // 3-day rate 0-1
+  adherence_drop: number         // % drop or absolute drop
+  trigger_notification: boolean
+  nurture_message_darija?: string
 }
 
 export interface HelaDocterChatResponse {
   answer: string             // French clinical response
-  sources: string[]          // referenced history points
-  confidence: number         // 0-1
+  history_analyzed: number   // count of records analyzed
+  sources?: string[]         
+  confidence?: number        
+}
+
+export interface HelaOnboardRequest {
+  profile: {
+    name: string
+    age: number
+    gender: string
+    phone: string
+    address: string
+    family_contact_name: string
+    family_access_granted: boolean
+  }
+  initial_vitals: {
+    systolic_bp: number
+    fasting_glucose: number
+    bmi: number
+  }
+  is_import: boolean
+}
+
+export interface HelaOnboardResponse {
+  patient_id: string
+  initial_risk: "LOW" | "MODERATE" | "HIGH"
+  ai_analysis: {
+    summary: string
+    suggested_focus: string
+  }
 }
 
 export interface HelaChatResponse {
@@ -148,11 +175,18 @@ export interface HelaChatRequest {
   include_glossary: boolean
 }
 
-export interface GlossaryResult {
-  term: string
-  darija: string
-  french: string
-  english: string
+export interface MedicalGlossaryItem {
+  id: number
+  darija_term: string
+  french_term: string | null
+  english_term: string | null
   category: string
-  similarity: number
+  severity: number | null
+  description: string | null
+  related_terms: string[] | null
+  created_at?: string
+}
+
+export interface GlossaryResult extends MedicalGlossaryItem {
+  similarity?: number
 }

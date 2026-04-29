@@ -183,9 +183,9 @@ export default function DashboardPageClient() {
               // Note: In a real scenario, these would come from specific endpoints 
               // but we map them from history for the UI demonstration
               setRiskAssessment({
-                risk_level: latest.category === 'HIGH' ? 2 : latest.category === 'MODERATE' ? 1 : 0,
-                risk_score: latest.risk_score || 0,
-                category: (latest.category as any) || 'LOW',
+                risk_level: latest.risk === 'HIGH' ? 2 : latest.risk === 'MODERATE' ? 1 : 0,
+                risk_score: 0, // Will be updated if added to spec
+                category: latest.risk || 'LOW',
                 probabilities: { low: 0, moderate: 0, high: 0 },
                 recommendations: [],
                 monitoring_frequency: 'Daily'
@@ -206,76 +206,54 @@ export default function DashboardPageClient() {
   }
 
   return (
-    <div className="max-w-[1400px] mx-auto relative">
+    <div className="max-w-[1600px] mx-auto px-4 py-8">
       {error && <ErrorBanner message={error} onDismiss={() => setError(null)} />}
       
       {/* API Health Banner */}
       {apiHealthy === false && (
-        <div className="mb-6 bg-rose-50 border border-rose-200 rounded-[24px] px-6 py-4 flex items-center gap-4 animate-in fade-in slide-in-from-top-2">
-          <div className="relative flex h-3 w-3">
+        <div className="mb-8 bg-rose-50 border border-rose-100 rounded-[32px] px-8 py-5 flex items-center gap-5 animate-in fade-in slide-in-from-top-2">
+          <div className="relative flex h-3 w-3 flex-shrink-0">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-3 w-3 bg-rose-500"></span>
           </div>
-          <p className="text-sm font-bold text-rose-700">
-            AI backend is unavailable — risk scores may be outdated. Supabase data is still live.
+          <p className="text-sm font-black text-rose-800">
+            AI Service Connectivity Alert: Backend is temporarily unreachable. Risk scores may not reflect real-time data.
           </p>
         </div>
       )}
 
-      {/* Glossary Slide-in Panel */}
-      {showGlossary && (
-        <>
-          <div 
-            className="fixed inset-0 bg-slate-900/5 backdrop-blur-sm z-30" 
-            onClick={() => setShowGlossary(false)} 
-          />
-          <div className="fixed left-64 top-16 w-[360px] h-[calc(100vh-64px)] bg-white/95 backdrop-blur-xl border-r border-sky-100/60 shadow-2xl z-40 animate-in slide-in-from-left duration-500 ease-out p-8">
-            <button 
-              onClick={() => setShowGlossary(false)}
-              className="absolute top-6 right-6 p-2 text-slate-400 hover:text-slate-800 bg-slate-50 rounded-xl transition-all"
-            >
-              <X className="w-4 h-4" />
-            </button>
-            <GlossarySearch />
-          </div>
-        </>
-      )}
-
       {/* Top Header */}
-      <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div className="flex items-center">
-          <div className="w-16 h-16 rounded-[24px] bg-sky-500 flex items-center justify-center mr-5 shadow-lg shadow-sky-200/60 border-2 border-white">
-            <span className="text-2xl font-bold text-white">NH</span>
-          </div>
-          <div>
-            <div className="flex items-center space-x-2 mb-1">
-              <span className="text-[13px] font-black text-sky-500 uppercase tracking-widest flex items-center">
-                <Sparkles className="w-3 h-3 mr-1" /> Welcome back
-              </span>
+      <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-8">
+        <div>
+          <div className="flex items-center gap-3 mb-3">
+            <div className="px-3 py-1 bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest rounded-lg border border-primary/20">
+              Clinical Workspace
             </div>
-            <h1 className="text-3xl font-black text-slate-800 tracking-tight">
-              Good morning, {DOCTOR_NAME}
-            </h1>
+            <div className="h-1 w-1 rounded-full bg-slate-300" />
+            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+              Last synced: Just now
+            </span>
           </div>
+          <h1 className="text-4xl font-black text-slate-900 tracking-tight mb-2">
+            Welcome back, {DOCTOR_NAME}
+          </h1>
+          <p className="text-slate-500 font-medium">
+            You have <span className="text-primary font-bold">{stats.highRiskToday} high-risk patients</span> requiring attention today.
+          </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <button
             onClick={() => setShowGlossary(true)}
-            className="inline-flex items-center gap-2 glass-card px-5 py-3 rounded-[20px] text-xs font-black text-slate-600 hover:text-sky-600 hover:bg-sky-50/80 transition-all"
+            className="inline-flex items-center gap-2.5 bg-white border border-slate-200 px-6 py-4 rounded-[24px] text-xs font-black text-slate-600 hover:text-primary hover:border-primary/30 hover:shadow-xl hover:shadow-slate-200/50 transition-all active:scale-95"
           >
-            <BookOpen className="w-4 h-4" />
+            <BookOpen className="w-4.5 h-4.5" />
             GLOSSARY
           </button>
-          <button
-            aria-label="Notifications"
-            className="p-3 glass-card rounded-[20px] text-slate-400 hover:text-sky-500 hover:bg-sky-50/80 transition-all"
-          >
-            <Bell className="w-6 h-6" />
-          </button>
+          
           <button
             onClick={() => setShowInviteModal(true)}
-            className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white px-6 py-3.5 rounded-[24px] font-black shadow-xl shadow-sky-200/60 transition-all duration-300 hover:-translate-y-1 active:scale-95"
+            className="inline-flex items-center gap-2.5 bg-slate-900 hover:bg-slate-800 text-white px-8 py-4 rounded-[24px] text-sm font-black shadow-2xl shadow-slate-200 transition-all active:scale-95"
           >
             <Plus className="w-5 h-5" strokeWidth={3} />
             ADD PATIENT
@@ -284,21 +262,23 @@ export default function DashboardPageClient() {
       </div>
 
       {/* Stats Section */}
-      <div className="mb-10">
+      <div className="mb-12">
         <StatsBar stats={stats} loading={loading.stats} pendingCodesCount={pendingCodesCount} />
       </div>
       
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-10">
         {/* Main Content Area - Risk Queue */}
-        <div className="lg:col-span-12">
-          <div className="glass-card rounded-[40px] overflow-hidden">
-            <div className="p-8 border-b border-slate-50 flex flex-col md:flex-row md:items-center justify-between gap-6">
-              <h3 className="text-xl font-black text-slate-800 tracking-tight flex items-center">
-                <UsersIcon className="w-6 h-6 mr-3 text-sky-500" />
-                AI-Prioritized Risk Queue
-              </h3>
+        <div className="xl:col-span-8">
+          <div className="bg-white rounded-[40px] border border-slate-100 shadow-sm overflow-hidden flex flex-col h-full">
+            <div className="p-10 border-b border-slate-50 flex flex-col md:flex-row md:items-center justify-between gap-8">
+              <div>
+                <h3 className="text-2xl font-black text-slate-900 tracking-tight flex items-center mb-1">
+                  AI Risk Queue
+                </h3>
+                <p className="text-sm font-medium text-slate-400">Real-time clinical triage prioritized by Hela AI</p>
+              </div>
               
-              <div className="flex-1 max-w-xl">
+              <div className="flex-1 max-w-md">
                 <FilterBar 
                   searchQuery={searchQuery}
                   onSearchChange={setSearchQuery}
@@ -310,41 +290,61 @@ export default function DashboardPageClient() {
               </div>
             </div>
             
-            <RiskQueue 
-              items={riskQueue.filter(item => {
-                // Connect filtering from FilterBar to RiskQueue items
-                const p = patients.find(p => p.patient_id === item.patient_id)
-                if (!p) return false
-                const q = searchQuery.toLowerCase()
-                const matchesSearch = (p.first_name?.toLowerCase().includes(q) || p.last_name?.toLowerCase().includes(q))
-                if (!matchesSearch && q !== '') return false
-                if (riskFilter !== 'ALL' && item.category !== riskFilter) return false
-                return true
-              })}
-              patients={patients}
-              loading={helaLoading.queue}
-              selectedPatientId={selectedPatient?.patient_id ?? null}
-              onPatientSelect={(pid) => {
-                const p = patients.find(p => p.patient_id === pid)
-                if (p) handlePatientClick(p)
-              }}
-            />
+            <div className="flex-1">
+              <RiskQueue 
+                items={riskQueue.filter(item => {
+                  const p = patients.find(p => p.patient_id === item.patient_id)
+                  if (!p) return false
+                  const q = searchQuery.toLowerCase()
+                  const matchesSearch = (p.first_name?.toLowerCase().includes(q) || p.last_name?.toLowerCase().includes(q))
+                  if (!matchesSearch && q !== '') return false
+                  const itemRisk = item.predicted_risk_level === 2 ? 'HIGH' : item.predicted_risk_level === 1 ? 'MODERATE' : 'LOW'
+                  if (riskFilter !== 'ALL' && itemRisk !== riskFilter) return false
+                  return true
+                })}
+                patients={patients}
+                loading={helaLoading.queue}
+                selectedPatientId={selectedPatient?.patient_id ?? null}
+                onPatientSelect={(pid) => {
+                  const p = patients.find(p => p.patient_id === pid)
+                  if (p) handlePatientClick(p)
+                }}
+              />
+            </div>
           </div>
         </div>
 
         {/* Global Risk Distribution */}
-        <div className="lg:col-span-12 mt-4">
-          <div className="glass-card rounded-[40px] p-8">
-             <div className="flex items-center mb-8">
-               <div className="p-3 bg-sky-50 rounded-2xl mr-4">
-                 <AlertCircle className="w-6 h-6 text-sky-500" />
+        <div className="xl:col-span-4 flex flex-col gap-8">
+          <div className="bg-white rounded-[40px] border border-slate-100 shadow-sm p-10 h-full">
+             <div className="flex items-center gap-5 mb-10">
+               <div className="w-14 h-14 bg-primary/5 rounded-2xl flex items-center justify-center text-primary border border-primary/10">
+                 <AlertCircle className="w-7 h-7" />
                </div>
                <div>
-                 <h3 className="text-xl font-black text-slate-800 tracking-tight">Population Overview</h3>
-                 <p className="text-sm font-medium text-slate-400">Aggregated risk metrics across all synced profiles</p>
+                 <h3 className="text-xl font-black text-slate-900 tracking-tight">Population</h3>
+                 <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Aggregated Risk</p>
                </div>
              </div>
-             <RiskChart data={riskDistribution} loading={loading.chart} />
+             <div className="h-[400px]">
+               <RiskChart data={riskDistribution} loading={loading.chart} />
+             </div>
+          </div>
+
+          <div className="bg-slate-900 rounded-[40px] p-10 text-white relative overflow-hidden group cursor-pointer shadow-2xl shadow-slate-200">
+            <div className="absolute -right-8 -bottom-8 w-48 h-48 bg-primary/20 rounded-full blur-3xl group-hover:bg-primary/40 transition-all duration-500" />
+            <div className="relative z-10">
+              <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center mb-6 backdrop-blur-md">
+                <Sparkles className="w-6 h-6 text-primary" />
+              </div>
+              <h4 className="text-xl font-black mb-2">AI Insights</h4>
+              <p className="text-sm text-slate-400 font-medium mb-6 leading-relaxed">
+                Unlock deeper patterns in your patient data with advanced diagnostic mapping.
+              </p>
+              <button className="text-xs font-black uppercase tracking-[0.2em] flex items-center gap-2 hover:gap-3 transition-all">
+                Learn more <X className="w-4 h-4 rotate-45" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -370,6 +370,30 @@ export default function DashboardPageClient() {
         doctorName={DOCTOR_NAME}
         onClose={() => setShowInviteModal(false)}
       />
+
+      {/* Glossary Slide-over */}
+      {showGlossary && (
+        <>
+          <div 
+            className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[60] animate-in fade-in duration-300"
+            onClick={() => setShowGlossary(false)}
+          />
+          <div className="fixed right-0 top-0 h-full w-full sm:w-[500px] bg-white shadow-2xl z-[70] animate-in slide-in-from-right duration-500 ease-out border-l border-slate-100 flex flex-col">
+            <div className="p-6 border-b border-slate-50 flex items-center justify-between">
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Medical Reference</span>
+              <button 
+                onClick={() => setShowGlossary(false)}
+                className="p-2 hover:bg-slate-50 rounded-xl transition-all text-slate-400 hover:text-slate-900"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="flex-1 overflow-hidden p-8">
+              <GlossarySearch />
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }
