@@ -7,13 +7,12 @@ export async function getDashboardStats(doctorId: string): Promise<DashboardStat
     today.setUTCHours(0, 0, 0, 0)
     const todayStr = today.toISOString()
 
-    // Get doctor's patient IDs (no access_level filter - new schema)
-    const { data: relationships } = await supabase
-      .from('doctor_patient_relationships')
-      .select('patient_id')
-      .eq('doctor_id', doctorId)
+    // Fetch all patients from the patients table (temporary)
+    const { data: patientData } = await supabase
+      .from('patients')
+      .select('id')
     
-    const patientIds = (relationships || []).map(r => r.patient_id)
+    const patientIds = (patientData || []).map(p => p.id)
 
     // totalPatients
     const totalPatients = patientIds.length
@@ -73,21 +72,10 @@ export async function getDashboardStats(doctorId: string): Promise<DashboardStat
 
 export async function getAllPatientsWithLatestAssessment(doctorId: string): Promise<PatientWithLatestAssessment[]> {
   try {
-    // New schema: no access_level column
-    const { data: relationships, error: relError } = await supabase
-      .from('doctor_patient_relationships')
-      .select('patient_id')
-      .eq('doctor_id', doctorId)
-    
-    if (relError || !relationships || relationships.length === 0) return []
-    
-    const patientIds = relationships.map(r => r.patient_id)
-
-    // New schema: patient data comes from profiles table
+    // Fetch all patients directly from patients table (temporary)
     const { data: patients, error } = await supabase
-      .from('profiles')
+      .from('patients')
       .select('*')
-      .in('id', patientIds)
     
     if (error || !patients) return []
 

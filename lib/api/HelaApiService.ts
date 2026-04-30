@@ -144,4 +144,28 @@ export class HelaApiService {
       return Err(e as ApiError);
     }
   }
+
+  /** POST /patients/check-in */
+  static async checkIn(
+    payload: any
+  ): Promise<Result<any, ApiError>> {
+    try {
+      const { data } = await api.post<any>('/patients/check-in', payload);
+      return Ok(data);
+    } catch (e) {
+      return Err(e as ApiError);
+    }
+  }
+
+  /** GET /patients/{id}/prescriptions */
+  static async getPrescriptions(
+    patientId: string
+  ): Promise<Result<any[], ApiError>> {
+    try {
+      const { data } = await api.get<any[]>(`/patients/${patientId}/prescriptions`);
+      return Ok(data);
+    } catch (e) {
+      return Err(e as ApiError);
+    }
+  }
 }

@@ -132,6 +132,7 @@ export interface HelaOnboardRequest {
     age?: number
     gender?: string
     phone?: string
+    email?: string
     address?: string
     family_contact_name?: string
     family_contact_phone?: string
@@ -196,4 +197,32 @@ export interface MedicalGlossaryItem {
 
 export interface GlossaryResult extends MedicalGlossaryItem {
   similarity?: number
+}
+
+// PATIENT COMPANION TYPES
+export interface HelaCheckInRequest {
+  patient_id: string
+  vitals: {
+    systolic_bp?: number
+    diastolic_bp?: number
+    fasting_glucose?: number
+    weight_kg?: number
+  }
+}
+
+export interface HelaCheckInResponse {
+  success: boolean
+  encouragement_darija: string
+  clinical_summary?: string
+  risk_status?: "LOW" | "MODERATE" | "HIGH"
+}
+
+export interface Medication {
+  id: string
+  name: string
+  dosage: string
+  instructions_darija: string
+  image_url: string
+  taken_today: boolean
+  frequency: string
 }

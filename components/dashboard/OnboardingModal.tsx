@@ -17,10 +17,15 @@ import {
   Sparkles,
   Camera,
   ArrowRight,
-  Info
+  Info,
+  Copy,
+  ExternalLink
 } from 'lucide-react'
 import { onboardPatient } from '../../lib/helaApi'
 import { HelaOnboardRequest, HelaOnboardResponse } from '../../lib/types'
+import { supabase } from '../../lib/supabase'
+
+const DOCTOR_ID = "00000000-0000-0000-0000-000000000000"
 
 interface OnboardingModalProps {
   isOpen: boolean
@@ -36,12 +41,15 @@ export default function OnboardingModal({ isOpen, onClose, onSuccess }: Onboardi
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [onboardResult, setOnboardResult] = useState<HelaOnboardResponse | null>(null)
+  const [origin, setOrigin] = useState('')
+  const [linkCopied, setLinkCopied] = useState(false)
 
   // Form State
   const [formData, setFormData] = useState({
     name: '',
     age: '',
     gender: 'male',
+    email: '',
     phone: '',
     address: '',
     medical_history_summary: '',
@@ -64,6 +72,10 @@ export default function OnboardingModal({ isOpen, onClose, onSuccess }: Onboardi
       setLoading(false)
       setError(null)
       setOnboardResult(null)
+      setLinkCopied(false)
+      if (typeof window !== 'undefined') {
+        setOrigin(window.location.origin)
+      }
     }
   }, [isOpen])
 
@@ -82,6 +94,7 @@ export default function OnboardingModal({ isOpen, onClose, onSuccess }: Onboardi
     const age = parseInt(formData.age)
     if (!age || age <= 0) return 'Patient age is required.'
     if (age > 150) return 'Age must be 150 or less.'
+    if (!formData.email.trim() || !/^\S+@\S+\.\S+$/.test(formData.email)) return 'A valid email address is required.'
     if (!formData.phone.trim()) return 'Phone number is required.'
     return null
   }
@@ -101,6 +114,7 @@ export default function OnboardingModal({ isOpen, onClose, onSuccess }: Onboardi
           name: formData.name,
           age: parseInt(formData.age),
           gender: formData.gender,
+          email: formData.email,
           phone: formData.phone,
           address: formData.address || undefined,
           family_contact_name: formData.family_contact_name || undefined,
@@ -113,7 +127,39 @@ export default function OnboardingModal({ isOpen, onClose, onSuccess }: Onboardi
 
       const result = await onboardPatient(payload)
       if (result.ok) {
-        setOnboardResult(result.val)
+        const onboardedData = result.val
+        
+        // SYNC TO SUPABASE: Map AI data to your provided 'patients' table schema
+        try {
+          const ageNum = parseInt(formData.age) || 30
+          const birthYear = new Date().getFullYear() - ageNum
+          const birthDate = `${birthYear}-01-01` // Calculated from age
+
+          const { error: patientError } = await supabase
+            .from('patients')
+            .upsert({
+              id: onboardedData.patient_id,
+              first_name: formData.name.split(' ')[0] || formData.name,
+              last_name: formData.name.split(' ').slice(1).join(' ') || 'Patient',
+              birth_date: birthDate,
+              gender: (formData.gender || 'male').toUpperCase(),
+              email: formData.email,
+              phone: formData.phone,
+              address: formData.address,
+              medical_history_summary: formData.medical_history_summary,
+              family_contact_name: formData.family_contact_name,
+              family_contact_phone: formData.family_contact_phone,
+              family_access_granted: formData.family_access_granted
+            })
+          
+          if (patientError) {
+            console.error('Failed to sync to patients table:', JSON.stringify(patientError, null, 2))
+          }
+        } catch (supabaseErr) {
+          console.error('Supabase sync error:', supabaseErr)
+        }
+
+        setOnboardResult(onboardedData)
         setStep('SUCCESS')
         if (onSuccess) onSuccess()
       } else {
@@ -254,7 +300,11 @@ export default function OnboardingModal({ isOpen, onClose, onSuccess }: Onboardi
                           <option value="female">Female</option>
                         </select>
                       </div>
-                      <div className="col-span-2">
+                      <div className="col-span-2 md:col-span-1">
+                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Email</label>
+                        <input name="email" type="email" value={formData.email} onChange={handleInputChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-4 font-bold text-slate-800 focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all" placeholder="ahmed@example.com" />
+                      </div>
+                      <div className="col-span-2 md:col-span-1">
                         <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Phone</label>
                         <input name="phone" value={formData.phone} onChange={handleInputChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-4 font-bold text-slate-800 focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all" placeholder="0550 12 34 56" />
                       </div>
@@ -405,16 +455,44 @@ export default function OnboardingModal({ isOpen, onClose, onSuccess }: Onboardi
                 <div className="bg-slate-50 rounded-[40px] p-10 border border-slate-100">
                    <div className="flex flex-col md:flex-row items-center gap-10">
                       <div className="bg-white p-6 rounded-[32px] shadow-sm border border-slate-100">
-                        {/* QR Code Placeholder */}
+                        {/* QR Code */}
                         <div className="w-40 h-40 flex flex-col items-center justify-center text-slate-200 relative">
                           <img 
-                            src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${onboardResult.patient_id}`}
+                            src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(`${origin}/patient/${onboardResult.patient_id}`)}`}
                             alt="Patient QR Code"
                             className="w-full h-full"
                           />
                         </div>
                       </div>
                       <div className="flex-1 space-y-6">
+                        <div>
+                           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Patient Profile Link</p>
+                           <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-2xl p-2 pl-4">
+                             <span className="text-sm font-bold text-slate-600 truncate flex-1">
+                               {`${origin}/patient/${onboardResult.patient_id}`}
+                             </span>
+                             <button
+                               onClick={() => {
+                                 navigator.clipboard.writeText(`${origin}/patient/${onboardResult.patient_id}`);
+                                 setLinkCopied(true);
+                                 setTimeout(() => setLinkCopied(false), 2000);
+                               }}
+                               className="p-3 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-xl transition-all"
+                               title="Copy Link"
+                             >
+                               {linkCopied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
+                             </button>
+                             <a 
+                               href={`${origin}/patient/${onboardResult.patient_id}`}
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               className="p-3 bg-primary/10 hover:bg-primary/20 text-primary rounded-xl transition-all"
+                               title="Open Link"
+                             >
+                               <ExternalLink className="w-4 h-4" />
+                             </a>
+                           </div>
+                        </div>
                         <div>
                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Security Verification Code</p>
                            <p className="text-4xl font-black text-slate-900 tracking-[0.3em]">
@@ -424,7 +502,7 @@ export default function OnboardingModal({ isOpen, onClose, onSuccess }: Onboardi
                         <div className="flex items-start gap-3 p-4 bg-white rounded-2xl border border-slate-100">
                           <Info className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                           <p className="text-xs text-slate-500 font-medium leading-relaxed">
-                            Ask the patient to scan this QR or enter the OTP in their <strong>Hela Mobile App</strong> to sync their profile.
+                            Provide this link or ask the patient to scan the QR code to securely access their medical history and profile directly.
                           </p>
                         </div>
                       </div>
